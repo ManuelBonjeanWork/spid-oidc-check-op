@@ -14,9 +14,9 @@ class Test_1_2_11 extends TestMetadata {
   async exec() {
     super.exec();
     this.notes = jwt_decode(this.metadata.entity_statement).exp;
-    if (!moment.unix(this.notes).isValid())
+    if (!moment.unix(this.notes).isValid()) {
       throw 'the value of exp is not a valid unix time';
-
+    }
     return true;
   }
 }

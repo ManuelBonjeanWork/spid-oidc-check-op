@@ -43,9 +43,9 @@ class Test_1_2_4 extends TestMetadata {
     let returnedDocumentVerified = await jose.JWS.createVerify(keystore).verify(
       returnedDocument
     );
-    this.notes(returnedDocumentVerified);
+    this.notes = returnedDocumentVerified;
     if (!this.notes) {
-      throw 'document not verifiable';
+      throw 'Document not verifiable';
     }
   }
 }

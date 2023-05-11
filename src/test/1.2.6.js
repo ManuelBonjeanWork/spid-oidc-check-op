@@ -12,9 +12,9 @@ class Test_1_2_6 extends TestMetadata {
   async exec() {
     super.exec();
     this.notes = jwt_decode(this.metadata.entity_statement).sub;
-    if (this.notes == null || this.notes == '')
+    if (this.notes == null || this.notes == '') {
       throw 'claim sub is not present';
-
+    }
     return true;
   }
 }

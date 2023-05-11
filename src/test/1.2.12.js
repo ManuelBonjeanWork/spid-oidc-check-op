@@ -12,9 +12,9 @@ class Test_1_2_12 extends TestMetadata {
   async exec() {
     super.exec();
     this.notes = jwt_decode(this.metadata.entity_statement).jwks;
-    if (this.notes == null || this.notes == '')
+    if (this.notes == null || this.notes == '') {
       throw 'claim jwks is not present';
-
+    }
     return true;
   }
 }

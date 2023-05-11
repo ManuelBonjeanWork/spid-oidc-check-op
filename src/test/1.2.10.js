@@ -12,8 +12,9 @@ class Test_1_2_10 extends TestMetadata {
   async exec() {
     super.exec();
     this.notes = jwt_decode(this.metadata.entity_statement).exp;
-    if (this.notes == null || this.notes == '')
+    if (this.notes == null || this.notes == '') {
       throw 'claim exp is not present';
+    }
     return true;
   }
 }
