@@ -2,24 +2,25 @@ const fs = require("fs");
 const path = require("path");
 const moment = require("../server/node_modules/moment");
 const jose = require("../server/node_modules/node-jose");
-const TestRefreshTokenRequest = require("../server/lib/test/TestRefreshTokenRequest.js");
+const TestTokenRequest = require("../server/lib/test/TestTokenRequest.js");
 const Utility = require("../server/lib/utils.js");
 const config_rp = require("../config/rp.json");
 
-class Test_3_1_32 extends TestRefreshTokenRequest {
-  constructor(metadata, authrequest = {}, authresponse = {}, tokenrequest={}, tokenresponse={}, refreshtokenrequest={}) {
-    super(metadata, authrequest, authresponse, tokenrequest, tokenresponse, refreshtokenrequest);
-    this.num = "3.1.32";
-    this.description =
-      "Wrong Token Request:if grant_type is 'refresh_token', the value of refresh_token is not present";
+class Test_3_1_9 extends TestTokenRequest {
+  constructor(metadata, authrequest = {}, authresponse = {}, tokenrequest) {
+    super(metadata, authrequest, authresponse, tokenrequest);
+    this.num = "3.1.9";
+    this.description = "Wrong Token Request:the claim sub in the client_assertion is not present";
     this.validation = "self";
   }
 
   async exec() {
-    this.refreshtokenrequest.client_id = config_rp.client_id;
-    this.refreshtokenrequest.grant_type = "refresh_token";
-    this.refreshtokenrequest.client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
-    this.refreshtokenrequest.redirect_uri = this.authrequest.redirect_uri;
+    this.tokenrequest.client_id = config_rp.client_id;
+    this.tokenrequest.code = this.authresponse.code;
+    this.tokenrequest.code_verifier = this.authrequest.code_verifier;
+    this.tokenrequest.grant_type = "authorization_code";
+    this.tokenrequest.client_assertion_type = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
+    this.tokenrequest.redirect_uri = this.authrequest.redirect_uri;
 
     const config_key = fs.readFileSync(path.resolve(__dirname, "../config/spid-oidc-check-op-sig.key"));
     const keystore = jose.JWK.createKeyStore();
@@ -37,10 +38,9 @@ class Test_3_1_32 extends TestRefreshTokenRequest {
       aud: this.metadata.configuration.token_endpoint,
       iat: iat.unix(),
       exp: exp.unix(),
-      sub: this.tokenrequest.client_id,
     });
 
-    this.refreshtokenrequest.client_assertion = await jose.JWS.createSign(
+    this.tokenrequest.client_assertion = await jose.JWS.createSign(
       {
         format: "compact",
         alg: "RS256",
@@ -53,4 +53,4 @@ class Test_3_1_32 extends TestRefreshTokenRequest {
   }
 }
 
-module.exports = Test_3_1_32;
+module.exports = Test_3_1_9;
